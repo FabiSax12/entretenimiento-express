@@ -11,17 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as Page1Import } from './routes/page-1'
 import { Route as IndexImport } from './routes/index'
-import { Route as UsersIndexImport } from './routes/users/index'
+import { Route as ProviderIdImport } from './routes/provider/$id'
+import { Route as ProviderPortfolioItemIdImport } from './routes/provider/portfolio-item/$id'
 
 // Create/Update Routes
-
-const Page1Route = Page1Import.update({
-  id: '/page-1',
-  path: '/page-1',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -29,9 +23,15 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const UsersIndexRoute = UsersIndexImport.update({
-  id: '/users/',
-  path: '/users/',
+const ProviderIdRoute = ProviderIdImport.update({
+  id: '/provider/$id',
+  path: '/provider/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProviderPortfolioItemIdRoute = ProviderPortfolioItemIdImport.update({
+  id: '/provider/portfolio-item/$id',
+  path: '/provider/portfolio-item/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,18 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/page-1': {
-      id: '/page-1'
-      path: '/page-1'
-      fullPath: '/page-1'
-      preLoaderRoute: typeof Page1Import
+    '/provider/$id': {
+      id: '/provider/$id'
+      path: '/provider/$id'
+      fullPath: '/provider/$id'
+      preLoaderRoute: typeof ProviderIdImport
       parentRoute: typeof rootRoute
     }
-    '/users/': {
-      id: '/users/'
-      path: '/users'
-      fullPath: '/users'
-      preLoaderRoute: typeof UsersIndexImport
+    '/provider/portfolio-item/$id': {
+      id: '/provider/portfolio-item/$id'
+      path: '/provider/portfolio-item/$id'
+      fullPath: '/provider/portfolio-item/$id'
+      preLoaderRoute: typeof ProviderPortfolioItemIdImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,42 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/page-1': typeof Page1Route
-  '/users': typeof UsersIndexRoute
+  '/provider/$id': typeof ProviderIdRoute
+  '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/page-1': typeof Page1Route
-  '/users': typeof UsersIndexRoute
+  '/provider/$id': typeof ProviderIdRoute
+  '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/page-1': typeof Page1Route
-  '/users/': typeof UsersIndexRoute
+  '/provider/$id': typeof ProviderIdRoute
+  '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/page-1' | '/users'
+  fullPaths: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/page-1' | '/users'
-  id: '__root__' | '/' | '/page-1' | '/users/'
+  to: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
+  id: '__root__' | '/' | '/provider/$id' | '/provider/portfolio-item/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  Page1Route: typeof Page1Route
-  UsersIndexRoute: typeof UsersIndexRoute
+  ProviderIdRoute: typeof ProviderIdRoute
+  ProviderPortfolioItemIdRoute: typeof ProviderPortfolioItemIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  Page1Route: Page1Route,
-  UsersIndexRoute: UsersIndexRoute,
+  ProviderIdRoute: ProviderIdRoute,
+  ProviderPortfolioItemIdRoute: ProviderPortfolioItemIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/page-1",
-        "/users/"
+        "/provider/$id",
+        "/provider/portfolio-item/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/page-1": {
-      "filePath": "page-1.tsx"
+    "/provider/$id": {
+      "filePath": "provider/$id.tsx"
     },
-    "/users/": {
-      "filePath": "users/index.tsx"
+    "/provider/portfolio-item/$id": {
+      "filePath": "provider/portfolio-item/$id.tsx"
     }
   }
 }

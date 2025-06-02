@@ -131,6 +131,9 @@ export const Header = () => {
               <p className="font-semibold">Sesión iniciada como</p>
               <p className="font-semibold">marvincampos@itc.ac.cr</p>
             </DropdownItem>
+            <DropdownItem key="settings">
+              <Link to='/provider/$id' params={{ id: 'user-1' }}>Perfil</Link>
+            </DropdownItem>
             <DropdownItem key="settings">Ajustes</DropdownItem>
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
             <DropdownItem key="logout" color="danger">
@@ -147,7 +150,7 @@ export const Header = () => {
           <Link to='/'>Home</Link>
         </NavbarMenuItem>
         <NavbarMenuItem>
-          <Link to='/'>Page 1</Link>
+          <Link to='/provider/$id' params={{ id: 'user-1' }}>Perfil</Link>
         </NavbarMenuItem>
       </NavbarMenu>
     </Navbar>
