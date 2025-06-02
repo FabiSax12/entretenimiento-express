@@ -41,6 +41,28 @@ export class MockProviderRepository implements IProviderRepository {
     Object.assign(provider, updates);
     return provider;
   }
+
+  createService(providerId: string, service: Service): Promise<Service> {
+    const provider = this.dataStore.getProviderById(providerId);
+    if (!provider) throw new Error('Provider not found');
+
+    // Simular creación de servicio
+    const newService = new Service(
+      `service-${Date.now()}`,
+      service.name || 'New Service',
+      service.description || 'Service Description',
+      service.basePrice || 0,
+      service.priceType || 'Fixed',
+      providerId,
+      service.isActive || true,
+      new Date(),
+      service.categories || [],
+      service.portfolioItems || [],
+      service.estimatedDuration,
+    );
+
+    return this.dataStore.createService(newService);
+  }
 }
 
 // =============================================
@@ -271,6 +293,27 @@ export class MockAppService {
 
   async getProvidersByCategory(category: string) {
     return this.providerRepo.getByCategory(category);
+  }
+
+  async addProviderService(providerId: string, service: Partial<Service>) {
+    const provider = await this.providerRepo.getById(providerId);
+    if (!provider) throw new Error('Provider not found');
+
+    const newService = new Service(
+      `service-${Date.now()}`,
+      service.name || 'New Service',
+      service.description || 'Service Description',
+      service.basePrice || 0,
+      service.priceType || 'Fixed',
+      providerId,
+      service.isActive || true,
+      new Date(),
+      service.categories || [],
+      service.portfolioItems || [],
+      service.estimatedDuration,
+    );
+
+    return this.dataStore.addServiceToProvider(providerId, newService);
   }
 
   // Client operations

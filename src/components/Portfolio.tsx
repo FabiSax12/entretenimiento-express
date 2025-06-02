@@ -3,6 +3,8 @@ import { Plus } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Provider } from "@/core/domain/entities";
 import { PortfolioItem } from "./PortfolioItem";
+import { useQuery } from "@tanstack/react-query";
+import { portfolioRepository } from "@/core/infrastructure/repositories/inMemory";
 
 interface PortfolioProps {
   providerData: Provider;
@@ -15,6 +17,16 @@ export const Portfolio: React.FC<PortfolioProps> = ({
   onAddItem,
   onEditItem
 }) => {
+
+  const {
+    data: portfolio,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['portfolio', providerData.id],
+    queryFn: async () => portfolioRepository.getByProviderId(providerData.id)
+  })
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -30,7 +42,13 @@ export const Portfolio: React.FC<PortfolioProps> = ({
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {providerData.portfolio.items.map((item) => (
+        {
+          isLoading && <div className="text-center text-gray-500">Cargando...</div>
+        }
+        {
+          isError && <div className="text-center text-red-500">Error al cargar el portafolio.</div>
+        }
+        {portfolio && portfolio.items.map((item) => (
           <PortfolioItem
             key={item.id}
             item={item}

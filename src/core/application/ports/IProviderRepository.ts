@@ -11,6 +11,7 @@ export interface IProviderRepository {
   getContractRequests(providerId: string): Promise<ContractRequest[]>;
   getReviews(providerId: string): Promise<Review[]>;
   updateProfile(providerId: string, updates: Partial<Provider>): Promise<Provider | undefined>;
+  createService(providerId: string, service: Service): Promise<Service>;
 }
 
 export interface SearchFilters {

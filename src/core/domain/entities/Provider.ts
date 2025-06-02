@@ -4,17 +4,18 @@ import type { Service } from "./Service";
 import type { Review } from "./Review";
 import type { ContractRequest } from "./ContractRequest";
 import type { PublicContact } from "../value-objects/PublicContact";
+import type { Category } from "./Category";
 
 export class Provider extends User {
   artisticName: string;
   biography: string;
   publicContact: PublicContact;
-  categories: string[];
   generalLocation: string;
-  portfolio: Portfolio;
-  services: Service[];
-  contractRequests: ContractRequest[];
-  reviews: Review[];
+  categories: Category['id'][];
+  portfolio: Portfolio['id'];
+  services: Service['id'][];
+  contractRequests: ContractRequest['id'][];
+  reviews: Review['id'][];
   isActive: boolean;
   avatarUrl?: string;
 
@@ -23,12 +24,12 @@ export class Provider extends User {
     artisticName: string,
     biography: string,
     publicContact: PublicContact,
-    categories: string[],
+    categories: Category['id'][],
     generalLocation: string,
-    portfolio: Portfolio,
-    services: Service[],
-    contractRequests: ContractRequest[],
-    reviews: Review[],
+    portfolio: Portfolio['id'],
+    services: Service['id'][],
+    contractRequests: ContractRequest['id'][],
+    reviews: Review['id'][],
     isActive: boolean,
     avatarUrl?: string
   ) {
@@ -46,7 +47,7 @@ export class Provider extends User {
     this.avatarUrl = avatarUrl;
   }
 
-  public addService(service: Service): void {
+  public addService(service: Service['id']): void {
     this.services.push(service);
   }
 }
