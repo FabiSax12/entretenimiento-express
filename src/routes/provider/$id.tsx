@@ -2,13 +2,13 @@ import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { Provider } from '@/core/domain/entities';
 import { MissingURLParamException } from '@/core/domain/exceptions/MissingURLParamException';
 import { useEditProfile } from "@/hooks/useEditProfile";
-import { useAddService } from "@/hooks/useAddService";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { ProfileTabs } from "@/components/tabs/ProfileTabs";
 import { EditProfileModal } from "@/components/modals/EditProfileModal";
 import { AddServiceDrawer } from "@/components/drawers/AddServiceDrawer";
 import { providerRepository, serviceRepository } from '@/core/infrastructure/repositories/inMemory';
-import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 export const Route = createFileRoute('/provider/$id')({
   component: RouteComponent,
@@ -29,6 +29,8 @@ function RouteComponent() {
   const providerData = useLoaderData({ from: Route.fullPath });
   const qc = useQueryClient();
 
+  const [isAddServiceDrawerOpen, setIsAddServiceDrawerOpen] = useState(false)
+
   const {
     isEditModalOpen,
     editFormData,
@@ -38,15 +40,6 @@ function RouteComponent() {
     handleCategoriesChange,
     openEditModal
   } = useEditProfile(providerData);
-
-  const {
-    isAddServiceDrawerOpen,
-    setIsAddServiceDrawerOpen,
-    serviceFormData,
-    handleServiceInputChange,
-    handleServiceSubmit,
-    togglePortfolioItem,
-  } = useAddService(providerData);
 
   const deleteServiceMutation = useMutation({
     mutationFn: (serviceId: string) => serviceRepository.delete(serviceId),
@@ -112,12 +105,7 @@ function RouteComponent() {
       <AddServiceDrawer
         isOpen={isAddServiceDrawerOpen}
         onClose={() => setIsAddServiceDrawerOpen(false)}
-        serviceFormData={serviceFormData}
         providerData={providerData}
-        onInputChange={handleServiceInputChange}
-        onCategoriesChange={handleCategoriesChange}
-        onSubmit={handleServiceSubmit}
-        onTogglePortfolioItem={togglePortfolioItem}
       />
     </div>
   );

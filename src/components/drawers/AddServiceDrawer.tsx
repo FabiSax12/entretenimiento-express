@@ -15,7 +15,6 @@ interface AddServiceDrawerProps {
   isOpen: boolean;
   onClose: () => void;
   providerData: Provider;
-  onSubmit: (serviceData: Partial<Service>) => void;
 }
 
 export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
