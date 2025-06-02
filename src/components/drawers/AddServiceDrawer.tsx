@@ -9,6 +9,7 @@ import { Provider, Service } from "@/core/domain/entities";
 import { getItemTypeIcon } from "@/utils/portfolioHelper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { categoryRepository, portfolioRepository, serviceRepository } from "@/core/infrastructure/repositories/inMemory";
+import { addToast } from "@heroui/toast";
 
 interface AddServiceDrawerProps {
   isOpen: boolean;
@@ -51,6 +52,12 @@ export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
       queryClient.refetchQueries({
         queryKey: ["services", providerData.id]
       })
+      addToast({
+        title: "Servicio creado",
+        description: "El servicio se ha creado exitosamente.",
+        color: "success",
+        variant: "bordered"
+      });
       onClose();
     },
     onError: (error) => {
