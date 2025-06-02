@@ -1,4 +1,5 @@
 import { Service } from "@/core/domain/entities";
+import { ResourceNotFoundException } from "@/core/domain/exceptions/ResourceNotFoundException";
 import type { ServiceRepository } from "@/core/domain/repositories/ServiceRepository";
 import servicesJson from "@/core/infrastructure/data/Services.json";
 
@@ -52,8 +53,9 @@ export class InMemoryServiceRepository implements ServiceRepository {
   }
 
   async delete(serviceId: string): Promise<void> {
+    console.log(this.services)
     if (!this.services.has(serviceId)) {
-      throw new Error(`Service with ID ${serviceId} does not exist.`);
+      throw new ResourceNotFoundException("Service", serviceId);
     }
     this.services.delete(serviceId);
   }

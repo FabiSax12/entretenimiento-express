@@ -7,7 +7,8 @@ import { ProfileHeader } from "@/components/ProfileHeader";
 import { ProfileTabs } from "@/components/tabs/ProfileTabs";
 import { EditProfileModal } from "@/components/modals/EditProfileModal";
 import { AddServiceDrawer } from "@/components/drawers/AddServiceDrawer";
-import { providerRepository } from '@/core/infrastructure/repositories/inMemory';
+import { providerRepository, serviceRepository } from '@/core/infrastructure/repositories/inMemory';
+import { QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const Route = createFileRoute('/provider/$id')({
   component: RouteComponent,
@@ -26,6 +27,7 @@ export const Route = createFileRoute('/provider/$id')({
 
 function RouteComponent() {
   const providerData = useLoaderData({ from: Route.fullPath });
+  const qc = useQueryClient();
 
   const {
     isEditModalOpen,
@@ -46,6 +48,17 @@ function RouteComponent() {
     togglePortfolioItem,
   } = useAddService(providerData);
 
+  const deleteServiceMutation = useMutation({
+    mutationFn: (serviceId: string) => serviceRepository.delete(serviceId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["services", providerData.id] });
+      console.log("Service deleted successfully");
+    },
+    onError: (error) => {
+      console.error("Error deleting service:", error);
+    }
+  });
+
   // Handlers for portfolio and services
   const handleAddPortfolioItem = () => {
     console.log("Add Portfolio Item clicked");
@@ -60,7 +73,7 @@ function RouteComponent() {
   };
 
   const handleDeleteService = (serviceId: string) => {
-    console.log(`Delete service ${serviceId}`);
+    deleteServiceMutation.mutate(serviceId)
   };
 
   if (!providerData) {
