@@ -1,26 +1,39 @@
-import React from "react";
+import React, { use, useMemo } from "react";
 import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import { Link } from "@tanstack/react-router";
-import { Service } from "@/core/domain/entities";
+import { Portfolio, Service } from "@/core/domain/entities";
 import { formatPrice } from "@/utils/formatPrice";
-import { QueryClient } from "@tanstack/react-query";
+import { categoryRepository, portfolioRepository } from "@/core/infrastructure/repositories/inMemory";
+import { useQuery } from "@tanstack/react-query";
 
 interface ServiceCardProps {
   service: Service;
   onEdit: (serviceId: string) => void;
   onDelete: (serviceId: string) => void;
 }
-
 export const ServiceCard: React.FC<ServiceCardProps> = ({
   service,
   onEdit,
   onDelete
 }) => {
-  const qc = new QueryClient();
-  const portfolioItems = qc.getQueryData<string[]>(['portfolioItems', service.id]) || [];
+
+  const categoriesPromise = useMemo(() => categoryRepository.getAll(), [])
+  const categories = use(categoriesPromise);
+
+  const {
+    data: portfolio,
+  } = useQuery<Portfolio>({
+    queryKey: ['portfolio', service.providerId],
+    queryFn: () => portfolioRepository.getByProviderId(service.providerId),
+  })
+
+  const servicePortfolioItems = useMemo(() => {
+    if (!portfolio) return [];
+    return portfolio.items.filter(item => service.portfolioItems.includes(item.id));
+  }, [portfolio, service.portfolioItems]);
 
   return (
     <Card>
@@ -48,13 +61,13 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
           <div>
             <h4 className="text-sm font-medium text-gray-400 mb-1">Categorías</h4>
             <div className="flex flex-wrap gap-1">
-              {service.categories.map((category, index) => (
+              {service.categories.map((categoryId) => (
                 <Chip
-                  key={index}
+                  key={categoryId}
                   size="sm"
                   variant="bordered"
                 >
-                  {category}
+                  {categories.find(cat => cat.id === categoryId)?.name || "Desconocida"}
                 </Chip>
               ))}
             </div>
@@ -73,11 +86,11 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                 Ejemplos del Portafolio
               </h4>
               <div className="flex flex-wrap gap-1">
-                {service.portfolioItems.map((itemId) => (
+                {servicePortfolioItems.map((item) => (
                   <Link
                     to='/provider/portfolio-item/$id'
-                    params={{ id: itemId }}
-                    key={itemId}
+                    params={{ id: item.id }}
+                    key={item.id}
                   >
                     <Chip
                       size="sm"
@@ -86,7 +99,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                       endContent={<SquareArrowOutUpRight size={16} />}
                       className="flex gap-2 px-4"
                     >
-                      {itemId}
+                      {item.title}
                     </Chip>
                   </Link>
                 ))}

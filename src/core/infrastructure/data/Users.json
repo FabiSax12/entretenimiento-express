@@ -1,0 +1,26 @@
+[
+  {
+    "id": "user-1",
+    "email": "djritmo@example.com",
+    "password": "hashedpass1",
+    "role": "Provider",
+    "createdAt": "2024-06-09T00:00:00.000Z",
+    "updatedAt": "2024-06-09T00:00:00.000Z"
+  },
+  {
+    "id": "user-2",
+    "email": "johndoe@example.com",
+    "password": "hashedpass2",
+    "role": "Client",
+    "createdAt": "2024-06-09T00:00:00.000Z",
+    "updatedAt": "2024-06-09T00:00:00.000Z"
+  },
+  {
+    "id": "user-3",
+    "email": "bandaXYZ@example.com",
+    "password": "hashedpass3",
+    "role": "Provider",
+    "createdAt": "2024-06-09T00:00:00.000Z",
+    "updatedAt": "2024-06-09T00:00:00.000Z"
+  }
+]

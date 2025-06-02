@@ -487,6 +487,19 @@ export class MockDataStore {
     return review;
   }
 
+  async createService(service: Service): Promise<Service> {
+    await this.simulateNetworkDelay();
+    this.services.set(service.id, service);
+
+    // Agregar a las relaciones
+    const provider = this.providers.get(service.providerId);
+    if (provider) {
+      provider.services.push(service);
+    }
+
+    return service;
+  }
+
   // =============================================
   // MÉTODOS DE ACTUALIZACIÓN (UPDATE)
   // =============================================

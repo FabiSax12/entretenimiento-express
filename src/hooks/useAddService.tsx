@@ -26,6 +26,7 @@ export const useAddService = (providerData: Provider) => {
   };
 
   const handleServiceSubmit = (e: React.FormEvent) => {
+    console.log("Submitting service form with data:", serviceFormData);
     e.preventDefault();
     addServiceMutation.mutate(
       new Service(
