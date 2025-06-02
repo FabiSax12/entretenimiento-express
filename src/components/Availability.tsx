@@ -8,11 +8,8 @@ import { Divider } from "@heroui/divider";
 import { useState } from "react";
 
 interface AvailabilityProps {
-    providerData: Provider;
-    // onAddService: () => void;
-    // onEditService: (serviceId: string) => void;
-    // onDeleteService: (serviceId: string) => void;
-    }
+  providerData: Provider;
+}
 
 interface Event {
   id: string
@@ -81,12 +78,8 @@ const mockEvents: Record<string, Event[]> = {
 
 
 export const Availability: React.FC<AvailabilityProps> = ({
-//   providerData,
-//   onAddService,
-//   onEditService,
-//   onDeleteService
 }) => {
-	
+
   const defaultDate = today(getLocalTimeZone())
   const [focusedDate, setFocusedDate] = useState<CalendarDate | null>(defaultDate)
   const [selectedDate, setSelectedDate] = useState<CalendarDate | null>(defaultDate)
@@ -157,16 +150,16 @@ export const Availability: React.FC<AvailabilityProps> = ({
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Calendar Section */}
-				<Calendar
-					className = "w-full lg:col-span-2"
-					aria-label="Calendario de disponibilidad"
-					minValue={defaultDate}
-					focusedValue={focusedDate}
-					value={selectedDate}
-					onFocusChange={setFocusedDate}
-					onChange={setSelectedDate}
-					visibleMonths={3}
-				/>
+        <Calendar
+          className="w-full lg:col-span-2"
+          aria-label="Calendario de disponibilidad"
+          minValue={defaultDate}
+          focusedValue={focusedDate}
+          value={selectedDate}
+          onFocusChange={setFocusedDate}
+          onChange={setSelectedDate}
+          visibleMonths={3}
+        />
 
         {/* Events Section */}
         <div className="lg:col-span-1">
