@@ -1,8 +1,10 @@
 import { StrictMode } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createRouter } from '@tanstack/react-router'
-import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
 import { HeroUIProvider } from '@heroui/system'
+import { ToastProvider } from '@heroui/toast'
+import * as TanStackQueryProvider from './integrations/tanstack-query/root-provider.tsx'
+import { PageSpinner } from './components/PageSpinner.tsx'
 import { routeTree } from './routeTree.gen'
 import './styles.css'
 
@@ -16,6 +18,7 @@ const router = createRouter({
   scrollRestoration: true,
   defaultStructuralSharing: true,
   defaultPreloadStaleTime: 0,
+  defaultPendingComponent: PageSpinner
 })
 
 // Register the router instance for type safety
@@ -32,6 +35,7 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <HeroUIProvider>
+        <ToastProvider />
         <TanStackQueryProvider.Provider>
           <RouterProvider router={router} />
         </TanStackQueryProvider.Provider>
