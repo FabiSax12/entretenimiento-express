@@ -9,8 +9,8 @@
     "isActive": true,
     "createdAt": "2025-06-02T00:00:00.000Z",
     "categories": [
-      "Corporativo",
-      "DJ"
+      "6",
+      "1"
     ],
     "portfolioItems": [
       "item-2",
@@ -30,9 +30,9 @@
     "isActive": true,
     "createdAt": "2025-06-02T00:00:00.000Z",
     "categories": [
-      "Fiestas Privadas",
-      "DJ",
-      "Pop"
+      "7",
+      "1",
+      "8"
     ],
     "portfolioItems": [
       "item-1",

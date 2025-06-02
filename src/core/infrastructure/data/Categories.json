@@ -18,5 +18,17 @@
   {
     "id": "5",
     "name": "Animación"
+  },
+  {
+    "id": "6",
+    "name": "Corporativo"
+  },
+  {
+    "id": "7",
+    "name": "Fiestas Privadas"
+  },
+  {
+    "id": "8",
+    "name": "Pop"
   }
 ]

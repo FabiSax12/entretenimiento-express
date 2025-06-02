@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Provider } from "@/core/domain/entities";
@@ -6,6 +6,7 @@ import { ServiceCard } from "./ServiceCard";
 import { EmptyServicesState } from "./EmptyServicesState";
 import { useQuery } from "@tanstack/react-query";
 import { serviceRepository } from "@/core/infrastructure/repositories/inMemory";
+import { Spinner } from "@heroui/spinner";
 
 interface ServicesProps {
   providerData: Provider;
@@ -52,12 +53,14 @@ export const Services: React.FC<ServicesProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
           {services.map((service) => (
-            <ServiceCard
-              key={service.id}
-              service={service}
-              onEdit={onEditService}
-              onDelete={onDeleteService}
-            />
+            <Suspense fallback={<Spinner />}>
+              <ServiceCard
+                key={service.id}
+                service={service}
+                onEdit={onEditService}
+                onDelete={onDeleteService}
+              />
+            </Suspense>
           ))}
         </div>
       ) : (

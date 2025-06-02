@@ -1,201 +1,271 @@
 import React from "react";
 import { Button } from "@heroui/button";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader } from "@heroui/drawer";
+import { Select, SelectItem } from "@heroui/select";
+import { Input, Textarea } from "@heroui/input";
+import { Form } from "@heroui/form";
+import { Checkbox } from "@heroui/checkbox";
 import { Provider, Service } from "@/core/domain/entities";
 import { getItemTypeIcon } from "@/utils/portfolioHelper";
-import { useMutation } from "@tanstack/react-query";
-import { mockAppService } from "@/core/infrastructure/repositories/MockProviderRepository";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { categoryRepository, portfolioRepository, serviceRepository } from "@/core/infrastructure/repositories/inMemory";
 
 interface AddServiceDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  serviceFormData: Partial<Service>;
   providerData: Provider;
-  onInputChange: (field: keyof Service, value: any) => void;
-  onCategoriesChange: (value: string) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onTogglePortfolioItem: (itemId: string) => void;
+  onSubmit: (serviceData: Partial<Service>) => void;
 }
 
 export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
   isOpen,
   onClose,
-  serviceFormData,
-  providerData,
-  onInputChange,
-  onCategoriesChange,
-  onSubmit,
-  onTogglePortfolioItem
+  providerData
 }) => {
-  const formRef = React.useRef<HTMLFormElement>(null);
 
-  const addServiceMutation = useMutation<Service, unknown, Service>({
-    mutationFn: async (newService: Service) => {
-      // Simulate API call to add service
-      return await mockAppService.addProviderService(providerData.id, newService);
+  const queryClient = useQueryClient();
+
+  const {
+    data: portfolio
+  } = useQuery({
+    queryKey: ["portfolio", providerData.id],
+    queryFn: async () => portfolioRepository.getByProviderId(providerData.id)
+  });
+
+  const {
+    data: categories
+  } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => categoryRepository.getAll()
+  });
+
+  const createServiceMutation = useMutation({
+    mutationFn: (serviceData: Partial<Service>) => {
+      return serviceRepository.create({
+        ...serviceData,
+        providerId: providerData.id
+      });
     },
-    onSuccess: (data) => {
-      console.log("Service added successfully:", data);
+    onSuccess: () => {
+      console.log("Service created successfully");
+      queryClient.refetchQueries({
+        queryKey: ["services", providerData.id]
+      })
       onClose();
     },
     onError: (error) => {
-      console.error("Error adding service:", error);
+      console.error("Error creating service:", error);
     }
   })
 
+  const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
 
+    const serviceData: Partial<Service> = {
+      name: formData.get("name") as string,
+      description: formData.get("description") as string,
+      basePrice: Number(formData.get("basePrice")),
+      priceType: formData.get("priceType") as Service["priceType"],
+      categories: formData.getAll("categories") as string[],
+      portfolioItems: formData.getAll("portfolioItems") as string[],
+      estimatedDuration: formData.get("estimatedDuration") as string || undefined,
+      technicalRequirements: formData.get("technicalRequirements") as string || undefined,
+      isActive: true,
+      createdAt: new Date(),
+      providerId: providerData.id
+    };
 
+    createServiceMutation.mutate(serviceData);
+  };
 
   return (
-    <Drawer isOpen={isOpen} onClose={onClose} size="lg">
+    <Drawer isOpen={isOpen} onClose={onClose} size="xl" isDismissable={false}>
       <DrawerContent>
         {(closeDrawer) => (
-          <>
+          <Form
+            onSubmit={handleFormSubmit}
+            validationBehavior="native"
+            className="flex flex-col h-full"
+          >
             <DrawerHeader>
               <h2 className="text-lg font-semibold text-foreground">
                 Añadir Nuevo Servicio
               </h2>
             </DrawerHeader>
 
-            <DrawerBody>
-              <form id="add-service-form" ref={formRef} onSubmit={() => console.log("Submit")} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Nombre del Servicio
-                    </label>
-                    <input
-                      type="text"
-                      value={serviceFormData.name || ""}
-                      onChange={(e) => onInputChange("name", e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
+            <DrawerBody className="space-y-6">
+              {/* Información básica */}
+              <div className="space-y-4">
+                <Input
+                  name="name"
+                  label="Nombre del Servicio"
+                  placeholder="Ej: DJ para bodas"
+                  isRequired
+                  validate={(value) => {
+                    if (!value || value.length < 3) {
+                      return "El nombre debe tener al menos 3 caracteres";
+                    }
+                  }}
+                />
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Categorías (separadas por comas)
-                    </label>
-                    <input
-                      type="text"
-                      value={serviceFormData.categories?.join(", ") || ""}
-                      onChange={(e) => onCategoriesChange(e.target.value)}
-                      placeholder="DJ, Corporativo, Música en vivo"
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
+                <Select
+                  name="categories"
+                  label="Categorías"
+                  placeholder="Selecciona las categorías"
+                  selectionMode="multiple"
+                  isLoading={!categories}
+                  isRequired
+                  validate={(value) => {
+                    if (!value || (value as unknown as Set<string>).size === 0) {
+                      return "Selecciona al menos una categoría";
+                    }
+                  }}
+                >
+                  {categories?.map((category) => (
+                    <SelectItem key={category.id} textValue={category.name}>
+                      {category.name}
+                    </SelectItem>
+                  )) || []}
+                </Select>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Descripción
-                  </label>
-                  <textarea
-                    value={serviceFormData.description || ""}
-                    onChange={(e) => onInputChange("description", e.target.value)}
-                    rows={4}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    required
-                  />
-                </div>
+                <Textarea
+                  name="description"
+                  label="Descripción"
+                  placeholder="Describe tu servicio en detalle..."
+                  rows={4}
+                  isRequired
+                  validate={(value) => {
+                    if (!value || value.length < 10) {
+                      return "La descripción debe tener al menos 10 caracteres";
+                    }
+                  }}
+                />
+              </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Tipo de Precio
-                    </label>
-                    <select
-                      value={serviceFormData.priceType || "fixed"}
-                      onChange={(e) => onInputChange("priceType", e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="fixed">Precio Fijo</option>
-                      <option value="hourly">Por Hora</option>
-                      <option value="event">Por Evento</option>
-                      <option value="custom">Personalizado</option>
-                    </select>
-                  </div>
+              {/* Información de precio */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Select
+                  name="priceType"
+                  label="Tipo de Precio"
+                  placeholder="Selecciona el tipo"
+                  defaultSelectedKeys={["Fixed"]}
+                  isRequired
+                >
+                  <SelectItem key="Fixed" textValue="Fixed">
+                    Precio Fijo
+                  </SelectItem>
+                  <SelectItem key="Hourly" textValue="Hourly">
+                    Por Hora
+                  </SelectItem>
+                  <SelectItem key="PerEvent" textValue="PerEvent">
+                    Por Evento
+                  </SelectItem>
+                  <SelectItem key="StartingFrom" textValue="StartingFrom">
+                    Desde (mínimo)
+                  </SelectItem>
+                </Select>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Precio (CRC)
-                    </label>
-                    <input
-                      type="number"
-                      value={serviceFormData.basePrice || ''}
-                      onChange={(e) => onInputChange("basePrice", Number(e.target.value))}
-                      min="0"
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      required
-                    />
-                  </div>
-                </div>
+                <Input
+                  name="basePrice"
+                  type="number"
+                  label="Precio Base (CRC)"
+                  placeholder="0"
+                  min="0"
+                  step="1000"
+                  isRequired
+                  validate={(value) => {
+                    const numValue = Number(value);
+                    if (!value || numValue <= 0) {
+                      return "El precio debe ser mayor a 0";
+                    }
+                  }}
+                  startContent={
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">₡</span>
+                    </div>
+                  }
+                />
+              </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-3">
+              {/* Información adicional */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Input
+                  name="estimatedDuration"
+                  label="Duración Estimada"
+                  placeholder="Ej: 4 horas, 1 día completo"
+                />
+
+                <Input
+                  name="technicalRequirements"
+                  label="Requerimientos Técnicos"
+                  placeholder="Ej: Acceso a electricidad, espacio 3x3m"
+                />
+              </div>
+
+              {/* Elementos del portafolio */}
+              {portfolio && portfolio.items.length > 0 && (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-medium text-foreground">
                     Vincular Elementos del Portafolio
-                  </label>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-48 overflow-y-auto">
-                    {providerData.portfolio.items.map((item) => (
-                      <div
-                        key={item.id}
-                        className={`p-3 rounded-md border cursor-pointer transition-colors ${serviceFormData.portfolioItems?.includes(item.id)
-                          ? "border-blue-500 bg-blue-900/20"
-                          : "border-gray-600 bg-gray-700 hover:border-gray-500"
-                          }`}
-                        onClick={() => onTogglePortfolioItem(item.id)}
-                      >
-                        <div className="flex items-center gap-3">
-                          <div className="flex-shrink-0">
-                            {React.createElement(getItemTypeIcon(item.type), { className: "w-5 h-5" })}
+                  </h3>
+                  <p className="text-xs text-default-500">
+                    Selecciona los elementos de tu portafolio relacionados con este servicio
+                  </p>
+
+                  <div className="grid grid-cols-1 gap-3 max-h-48 overflow-y-auto p-1">
+                    {portfolio.items.map((item) => (
+                      <div key={item.id} className="flex">
+                        <Checkbox
+                          name="portfolioItems"
+                          value={item.id}
+                          classNames={{
+                            base: "inline-flex w-full max-w-full bg-content1 m-0 hover:bg-content2 items-center justify-start cursor-pointer rounded-lg gap-2 p-4 border-2 border-transparent data-[selected=true]:border-primary",
+                            label: "w-full"
+                          }}
+                        >
+                          <div className="flex items-center gap-3 w-full">
+                            <div className="flex-shrink-0">
+                              {React.createElement(getItemTypeIcon(item.type), {
+                                className: "w-5 h-5 text-default-500"
+                              })}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-medium text-foreground truncate">
+                                {item.title}
+                              </p>
+                              <p className="text-xs text-default-500 truncate">
+                                {item.description}
+                              </p>
+                            </div>
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">
-                              {item.title}
-                            </p>
-                            <p className="text-xs text-gray-400 truncate">
-                              {item.description}
-                            </p>
-                          </div>
-                          {serviceFormData.portfolioItems?.includes(item.id) && (
-                            <div className="text-blue-400">✓</div>
-                          )}
-                        </div>
+                        </Checkbox>
                       </div>
                     ))}
                   </div>
                 </div>
-                <button type="submit">Submit</button>
-              </form>
+              )}
             </DrawerBody>
 
             <DrawerFooter>
-              <div className="flex justify-end gap-3">
+              <div className="flex justify-end gap-3 w-full">
                 <Button
                   variant="bordered"
                   onPress={closeDrawer}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  color="default"
                 >
                   Cancelar
                 </Button>
                 <Button
                   type="submit"
-                  form="add-service-form"
                   color="primary"
-                  onPress={() => {
-                    if (formRef.current) {
-                      formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
-                    }
-                    closeDrawer();
-                  }}
+                  variant="solid"
                 >
                   Añadir Servicio
                 </Button>
               </div>
             </DrawerFooter>
-          </>
+          </Form>
         )}
       </DrawerContent>
     </Drawer>
