@@ -8,6 +8,7 @@ import { ProfileHeader } from "@/components/ProfileHeader";
 import { ProfileTabs } from "@/components/tabs/ProfileTabs";
 import { EditProfileModal } from "@/components/modals/EditProfileModal";
 import { AddServiceDrawer } from "@/components/drawers/AddServiceDrawer";
+import { mockAppService } from '@/core/infrastructure/repositories/MockProviderRepository';
 
 export const Route = createFileRoute('/provider/$id')({
   component: RouteComponent,
@@ -16,7 +17,7 @@ export const Route = createFileRoute('/provider/$id')({
     if (!id) throw new MissingURLParamException(['id']);
     return context.queryClient.ensureQueryData({
       queryKey: ['provider', id],
-      queryFn: async () => getProvider(id),
+      queryFn: async () => mockAppService.getProvider(id),
       staleTime: 1000 * 60 * 5,
       retry: 1,
     });
