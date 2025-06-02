@@ -1,0 +1,45 @@
+[
+  {
+    "id": "service-1",
+    "name": "DJ para Eventos Corporativos",
+    "description": "Servicio completo de DJ para eventos empresariales, incluyendo música ambiental y animación profesional.",
+    "basePrice": 150000,
+    "priceType": "PerEvent",
+    "providerId": "user-1",
+    "isActive": true,
+    "createdAt": "2025-06-02T00:00:00.000Z",
+    "categories": [
+      "Corporativo",
+      "DJ"
+    ],
+    "portfolioItems": [
+      "item-2",
+      "item-4"
+    ],
+    "estimatedDuration": "2 horas",
+    "technicalRequirements": "Equipo de sonido profesional, conexión a internet estable",
+    "contracts": []
+  },
+  {
+    "id": "service-2",
+    "name": "DJ para Fiestas Privadas",
+    "description": "Música personalizada y ambiente festivo para cumpleaños, aniversarios y otras celebraciones privadas.",
+    "basePrice": 100000,
+    "priceType": "PerEvent",
+    "providerId": "user-1",
+    "isActive": true,
+    "createdAt": "2025-06-02T00:00:00.000Z",
+    "categories": [
+      "Fiestas Privadas",
+      "DJ",
+      "Pop"
+    ],
+    "portfolioItems": [
+      "item-1",
+      "item-3"
+    ],
+    "estimatedDuration": "3 horas",
+    "technicalRequirements": "Equipo de sonido básico",
+    "contracts": []
+  }
+]

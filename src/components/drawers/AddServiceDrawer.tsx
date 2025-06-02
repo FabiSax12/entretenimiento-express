@@ -3,6 +3,8 @@ import { Button } from "@heroui/button";
 import { Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader } from "@heroui/drawer";
 import { Provider, Service } from "@/core/domain/entities";
 import { getItemTypeIcon } from "@/utils/portfolioHelper";
+import { useMutation } from "@tanstack/react-query";
+import { mockAppService } from "@/core/infrastructure/repositories/MockProviderRepository";
 
 interface AddServiceDrawerProps {
   isOpen: boolean;
@@ -25,6 +27,25 @@ export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
   onSubmit,
   onTogglePortfolioItem
 }) => {
+  const formRef = React.useRef<HTMLFormElement>(null);
+
+  const addServiceMutation = useMutation<Service, unknown, Service>({
+    mutationFn: async (newService: Service) => {
+      // Simulate API call to add service
+      return await mockAppService.addProviderService(providerData.id, newService);
+    },
+    onSuccess: (data) => {
+      console.log("Service added successfully:", data);
+      onClose();
+    },
+    onError: (error) => {
+      console.error("Error adding service:", error);
+    }
+  })
+
+
+
+
   return (
     <Drawer isOpen={isOpen} onClose={onClose} size="lg">
       <DrawerContent>
@@ -37,7 +58,7 @@ export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
             </DrawerHeader>
 
             <DrawerBody>
-              <form onSubmit={onSubmit} className="space-y-6">
+              <form id="add-service-form" ref={formRef} onSubmit={() => console.log("Submit")} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
@@ -146,6 +167,7 @@ export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
                     ))}
                   </div>
                 </div>
+                <button type="submit">Submit</button>
               </form>
             </DrawerBody>
 
@@ -160,9 +182,12 @@ export const AddServiceDrawer: React.FC<AddServiceDrawerProps> = ({
                 </Button>
                 <Button
                   type="submit"
+                  form="add-service-form"
                   color="primary"
                   onPress={() => {
-                    console.log("Service added");
+                    if (formRef.current) {
+                      formRef.current.dispatchEvent(new Event("submit", { cancelable: true }));
+                    }
                     closeDrawer();
                   }}
                 >

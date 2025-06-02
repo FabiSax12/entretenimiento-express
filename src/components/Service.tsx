@@ -4,6 +4,8 @@ import { Button } from "@heroui/button";
 import { Provider } from "@/core/domain/entities";
 import { ServiceCard } from "./ServiceCard";
 import { EmptyServicesState } from "./EmptyServicesState";
+import { useQuery } from "@tanstack/react-query";
+import { serviceRepository } from "@/core/infrastructure/repositories/inMemory";
 
 interface ServicesProps {
   providerData: Provider;
@@ -18,6 +20,17 @@ export const Services: React.FC<ServicesProps> = ({
   onEditService,
   onDeleteService
 }) => {
+  const {
+    data: services,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ['services', providerData.id],
+    queryFn: async () => serviceRepository.getByProviderId(providerData.id),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -32,9 +45,13 @@ export const Services: React.FC<ServicesProps> = ({
         </Button>
       </div>
 
-      {providerData.services.length > 0 ? (
+      {isLoading && <div className="text-center text-gray-500">Cargando servicios...</div>}
+      {isError && <div className="text-center text-red-500">Error al cargar los servicios.</div>}
+
+      {services && services.length > 0 ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {providerData.services.map((service) => (
+
+          {services.map((service) => (
             <ServiceCard
               key={service.id}
               service={service}

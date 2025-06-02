@@ -1,0 +1,26 @@
+[
+  {
+    "userId": "user-1",
+    "artisticName": "DJ Ritmo",
+    "description": "DJ profesional con más de 10 años de experiencia en eventos corporativos y fiestas privadas. Especializado en música latina, electrónica y pop internacional.",
+    "publicContact": {
+      "email": "djritmo@example.com",
+      "phone": "+506 8888-8888",
+      "social": {
+        "instagram": "djritmo",
+        "facebook": "djritmo.cr"
+      }
+    },
+    "categories": [
+      "DJ",
+      "Música Electrónica",
+      "Pop"
+    ],
+    "location": "San José, Costa Rica",
+    "isActive": true,
+    "avatarUrl": "https://i.pravatar.cc/150?u=a042581f4e29026704d",
+    "services": [],
+    "reviews": [],
+    "verified": true
+  }
+]

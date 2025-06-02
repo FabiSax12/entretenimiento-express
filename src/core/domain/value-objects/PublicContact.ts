@@ -1,6 +1,7 @@
 export class PublicContact {
   email: string;
   phone: string;
+  socialMedia?: Record<string, string>;
 
   constructor(
     email: string,
@@ -9,5 +10,6 @@ export class PublicContact {
   ) {
     this.email = email;
     this.phone = phone;
+    this.socialMedia = socialMedia;
   }
 }

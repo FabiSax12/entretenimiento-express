@@ -1,23 +1,23 @@
 import { createFileRoute, useLoaderData } from '@tanstack/react-router';
 import { Provider } from '@/core/domain/entities';
 import { MissingURLParamException } from '@/core/domain/exceptions/MissingURLParamException';
-import { getProvider } from "@/services/provider";
 import { useEditProfile } from "@/hooks/useEditProfile";
 import { useAddService } from "@/hooks/useAddService";
 import { ProfileHeader } from "@/components/ProfileHeader";
 import { ProfileTabs } from "@/components/tabs/ProfileTabs";
 import { EditProfileModal } from "@/components/modals/EditProfileModal";
 import { AddServiceDrawer } from "@/components/drawers/AddServiceDrawer";
-import { mockAppService } from '@/core/infrastructure/repositories/MockProviderRepository';
+import { providerRepository } from '@/core/infrastructure/repositories/inMemory';
 
 export const Route = createFileRoute('/provider/$id')({
   component: RouteComponent,
   loader: async ({ context, params }): Promise<Provider> => {
     const { id } = params
     if (!id) throw new MissingURLParamException(['id']);
+
     return context.queryClient.ensureQueryData({
       queryKey: ['provider', id],
-      queryFn: async () => mockAppService.getProvider(id),
+      queryFn: async () => providerRepository.getById(id),
       staleTime: 1000 * 60 * 5,
       retry: 1,
     });
