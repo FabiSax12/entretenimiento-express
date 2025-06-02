@@ -5,6 +5,7 @@ import { Provider } from "@/core/domain/entities";
 import { ProfileDetails } from "../ProfileDetails";
 import { Portfolio } from "../Portfolio";
 import { Services } from "../Service";
+import { Availability } from "../Availability";
 
 interface ProfileTabsProps {
   providerData: Provider;
@@ -44,6 +45,11 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
             onAddService={onAddService}
             onEditService={onEditService}
             onDeleteService={onDeleteService}
+          />
+        </Tab>
+        <Tab key="availability" title="Disponibilidad">
+          <Availability
+            providerData = {providerData}
           />
         </Tab>
       </Tabs>
