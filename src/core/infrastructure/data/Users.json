@@ -22,5 +22,21 @@
     "role": "Provider",
     "createdAt": "2024-06-09T00:00:00.000Z",
     "updatedAt": "2024-06-09T00:00:00.000Z"
+  },
+  {
+    "id": "user-4",
+    "email": "alvaro23@example.com",
+    "password": "hashedpass4",
+    "role": "Client",
+    "createdAt": "2024-04-09T00:00:00.000Z",
+    "updatedAt": "2024-06-09T00:00:00.000Z"
+  },
+  {
+    "id": "user-5",
+    "email": "oscarAlejandro43@example.com",
+    "password": "hashedpass5",
+    "role": "Client",
+    "createdAt": "2024-06-09T00:00:00.000Z",
+    "updatedAt": "2024-06-09T00:00:00.000Z"
   }
 ]
