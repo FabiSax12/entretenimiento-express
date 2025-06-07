@@ -59,4 +59,14 @@ export class InMemoryServiceRepository implements ServiceRepository {
     }
     this.services.delete(serviceId);
   }
+  async searchByKeyword(keyword: string): Promise<Service[]> {
+    const lower = keyword.toLowerCase()
+    return Array.from(this.services.values()).filter(s => {
+      return (
+        s.name.toLowerCase().includes(lower) ||
+        s.description.toLowerCase().includes(lower) ||
+        s.categories.some(c => c.toLowerCase().includes(lower))
+      )
+    })
+  }
 }
