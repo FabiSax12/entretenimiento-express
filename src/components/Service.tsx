@@ -7,6 +7,8 @@ import { EmptyServicesState } from "./EmptyServicesState";
 import { useQuery } from "@tanstack/react-query";
 import { serviceRepository } from "@/core/infrastructure/repositories/inMemory";
 import { Spinner } from "@heroui/spinner";
+import { useAuthStore } from "@/stores/authStore";
+import { usePermissions } from "@/hooks/usePermissions";
 
 interface ServicesProps {
   providerData: Provider;
@@ -21,6 +23,10 @@ export const Services: React.FC<ServicesProps> = ({
   onEditService,
   onDeleteService
 }) => {
+
+  const user = useAuthStore((state) => state.user);
+  const servicePermissions = usePermissions(user, providerData.id, 'service');
+
   const {
     data: services,
     isLoading,
@@ -36,14 +42,16 @@ export const Services: React.FC<ServicesProps> = ({
     <div>
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-white">Mis Servicios</h2>
-        <Button
-          color="primary"
-          variant="bordered"
-          startContent={<Plus className="h-4 w-4" />}
-          onPress={onAddService}
-        >
-          Añadir Servicio
-        </Button>
+        {
+          servicePermissions.canCreate && <Button
+            color="primary"
+            variant="bordered"
+            startContent={<Plus className="h-4 w-4" />}
+            onPress={onAddService}
+          >
+            Añadir Servicio
+          </Button>
+        }
       </div>
 
       {isLoading && <div className="text-center text-gray-500">Cargando servicios...</div>}
@@ -59,6 +67,8 @@ export const Services: React.FC<ServicesProps> = ({
                 service={service}
                 onEdit={onEditService}
                 onDelete={onDeleteService}
+                canEdit={servicePermissions.canEdit}
+                canDelete={servicePermissions.canDelete}
               />
             </Suspense>
           ))}

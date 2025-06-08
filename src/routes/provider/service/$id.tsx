@@ -1,47 +1,60 @@
-import React, { use, useMemo } from "react";
-import { SquareArrowOutUpRight } from "lucide-react";
-import { Button } from "@heroui/button";
-import { Card } from "@heroui/card";
-import { Chip } from "@heroui/chip";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Portfolio, Service } from "@/core/domain/entities";
-import { formatPrice } from "@/utils/formatPrice";
-import { categoryRepository, portfolioRepository } from "@/core/infrastructure/repositories/inMemory";
-import { useQuery } from "@tanstack/react-query";
+import { ReviewsSection } from '@/components/ReviewSection'
+import type { Portfolio, Review } from '@/core/domain/entities'
+import { categoryRepository, portfolioRepository, serviceRepository } from '@/core/infrastructure/repositories/inMemory'
+import { formatPrice } from '@/utils/formatPrice'
+import { Button } from '@heroui/button'
+import { Card } from '@heroui/card'
+import { Chip } from '@heroui/chip'
+import { useQuery } from '@tanstack/react-query'
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { SquareArrowOutUpRight } from 'lucide-react'
+import { useMemo } from 'react'
 
-interface ServiceCardProps {
-  service: Service;
-  canEdit?: boolean;
-  canDelete?: boolean;
-  onEdit: (serviceId: string) => void;
-  onDelete: (serviceId: string) => void;
-}
-export const ServiceCard: React.FC<ServiceCardProps> = ({
-  service,
-  onEdit,
-  onDelete,
-  canEdit = false,
-  canDelete = false
-}) => {
+export const Route = createFileRoute('/provider/service/$id')({
+  component: RouteComponent,
 
-  const navigate = useNavigate();
+  loader: async ({ context, params }) => {
+    const { id } = params
 
-  const categoriesPromise = useMemo(() => categoryRepository.getAll(), [])
-  const categories = use(categoriesPromise);
+    return context.queryClient.ensureQueryData({
+      queryKey: ['service', id],
+      queryFn: async () => serviceRepository.getById(id),
+      staleTime: 1000 * 60 * 5,
+      retry: 1,
+    })
+  },
+})
+
+function RouteComponent() {
+
+  const navigate = Route.useNavigate()
+  const service = Route.useLoaderData()
 
   const {
     data: portfolio,
   } = useQuery<Portfolio>({
-    queryKey: ['portfolio', service.providerId],
-    queryFn: () => portfolioRepository.getByProviderId(service.providerId),
+    queryKey: ['portfolio', service!.providerId],
+    queryFn: () => portfolioRepository.getByProviderId(service!.providerId),
+    enabled: service !== undefined,
   })
 
   const servicePortfolioItems = useMemo(() => {
-    if (!portfolio) return [];
+    if (!portfolio || service === undefined) return [];
     return portfolio.items.filter(item => service.portfolioItems.includes(item.id));
-  }, [portfolio, service.portfolioItems]);
+  }, [portfolio, service?.portfolioItems]);
 
-  return (
+  const categoriesQuery = useQuery({
+    queryKey: ['categories'],
+    queryFn: () => categoryRepository.getAll(),
+    staleTime: 1000 * 60 * 5,
+    retry: 1,
+  })
+
+  if (!service) {
+    return <div className="text-center text-gray-500">Servicio no encontrado.</div>
+  }
+
+  return <div>
     <Card>
       <div className="p-6">
         <div className="flex justify-between items-start mb-4">
@@ -73,7 +86,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                   size="sm"
                   variant="bordered"
                 >
-                  {categories.find(cat => cat.id === categoryId)?.name || "Desconocida"}
+                  {categoriesQuery.data && categoriesQuery.data.find(cat => cat.id === categoryId)?.name || "Desconocida"}
                 </Chip>
               ))}
             </div>
@@ -117,33 +130,17 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
             <span className="text-xs text-gray-500">
               Creado: {new Date(service.createdAt).toLocaleDateString()}
             </span>
-            <div className="flex gap-2">
-              {
-                canEdit && <Button
-                  variant="light"
-                  size="sm"
-                  onPress={() => onEdit(service.id)}
-                >
-                  Editar
-                </Button>
-              }
-              {
-                canDelete && <Button
-                  color="danger"
-                  variant="light"
-                  size="sm"
-                  onPress={() => onDelete(service.id)}
-                >
-                  Eliminar
-                </Button>
-              }
-              <Button onPress={() => navigate({ to: '/provider/service/$id', params: { id: service.id } })} variant="shadow" color="primary" size="sm">
-                Ver Detalles
-              </Button>
-            </div>
           </div>
         </div>
       </div>
     </Card>
-  );
-};
+    <Card>
+      {/* <ReviewsSection
+        reviews={service.}
+        averageRating={averageRating}
+        currentUser={currentUser}
+        serviceId={service.id}
+      /> */}
+    </Card>
+  </div>
+}

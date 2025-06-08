@@ -5,6 +5,8 @@ import { Provider } from "@/core/domain/entities";
 import { PortfolioItem } from "./PortfolioItem";
 import { useQuery } from "@tanstack/react-query";
 import { portfolioRepository } from "@/core/infrastructure/repositories/inMemory";
+import { usePermissions } from "@/hooks/usePermissions";
+import { useAuthStore } from "@/stores/authStore";
 
 interface PortfolioProps {
   providerData: Provider;
@@ -18,6 +20,8 @@ export const Portfolio: React.FC<PortfolioProps> = ({
   onEditItem
 }) => {
 
+  const user = useAuthStore((state) => state.user);
+
   const {
     data: portfolio,
     isLoading,
@@ -27,18 +31,26 @@ export const Portfolio: React.FC<PortfolioProps> = ({
     queryFn: async () => portfolioRepository.getByProviderId(providerData.id)
   })
 
+
+  const portfolioPermissions = usePermissions(user, providerData.id, 'portfolio')
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-foreground">Mi Portafolio</h2>
-        <Button
-          color="primary"
-          variant="bordered"
-          startContent={<Plus className="h-4 w-4" />}
-          onPress={onAddItem}
-        >
-          Añadir Elemento
-        </Button>
+        <h2 className="text-xl font-semibold text-foreground">
+          Portafolio
+        </h2>
+        {
+
+          portfolioPermissions.canCreate && <Button
+            color="primary"
+            variant="bordered"
+            startContent={<Plus className="h-4 w-4" />}
+            onPress={onAddItem}
+          >
+            Añadir Elemento
+          </Button>
+        }
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -53,6 +65,7 @@ export const Portfolio: React.FC<PortfolioProps> = ({
             key={item.id}
             item={item}
             onEdit={onEditItem}
+            canEdit={portfolioPermissions.canEdit}
           />
         ))}
       </div>

@@ -12,8 +12,12 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
+import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as ProviderIdImport } from './routes/provider/$id'
+import { Route as ClientIdImport } from './routes/client/$id'
+import { Route as ProviderServiceIdImport } from './routes/provider/service/$id'
 import { Route as ProviderPortfolioItemIdImport } from './routes/provider/portfolio-item/$id'
+import { Route as BuscarProviderIdImport } from './routes/buscar/provider/$id'
 
 // Create/Update Routes
 
@@ -23,15 +27,39 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const LoginIndexRoute = LoginIndexImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProviderIdRoute = ProviderIdImport.update({
   id: '/provider/$id',
   path: '/provider/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
+const ClientIdRoute = ClientIdImport.update({
+  id: '/client/$id',
+  path: '/client/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProviderServiceIdRoute = ProviderServiceIdImport.update({
+  id: '/provider/service/$id',
+  path: '/provider/service/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const ProviderPortfolioItemIdRoute = ProviderPortfolioItemIdImport.update({
   id: '/provider/portfolio-item/$id',
   path: '/provider/portfolio-item/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const BuscarProviderIdRoute = BuscarProviderIdImport.update({
+  id: '/buscar/provider/$id',
+  path: '/buscar/provider/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,11 +74,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/client/$id': {
+      id: '/client/$id'
+      path: '/client/$id'
+      fullPath: '/client/$id'
+      preLoaderRoute: typeof ClientIdImport
+      parentRoute: typeof rootRoute
+    }
     '/provider/$id': {
       id: '/provider/$id'
       path: '/provider/$id'
       fullPath: '/provider/$id'
       preLoaderRoute: typeof ProviderIdImport
+      parentRoute: typeof rootRoute
+    }
+    '/login/': {
+      id: '/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginIndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/buscar/provider/$id': {
+      id: '/buscar/provider/$id'
+      path: '/buscar/provider/$id'
+      fullPath: '/buscar/provider/$id'
+      preLoaderRoute: typeof BuscarProviderIdImport
       parentRoute: typeof rootRoute
     }
     '/provider/portfolio-item/$id': {
@@ -60,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProviderPortfolioItemIdImport
       parentRoute: typeof rootRoute
     }
+    '/provider/service/$id': {
+      id: '/provider/service/$id'
+      path: '/provider/service/$id'
+      fullPath: '/provider/service/$id'
+      preLoaderRoute: typeof ProviderServiceIdImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -67,42 +123,84 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/client/$id': typeof ClientIdRoute
   '/provider/$id': typeof ProviderIdRoute
+  '/login': typeof LoginIndexRoute
+  '/buscar/provider/$id': typeof BuscarProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
+  '/provider/service/$id': typeof ProviderServiceIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/client/$id': typeof ClientIdRoute
   '/provider/$id': typeof ProviderIdRoute
+  '/login': typeof LoginIndexRoute
+  '/buscar/provider/$id': typeof BuscarProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
+  '/provider/service/$id': typeof ProviderServiceIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/client/$id': typeof ClientIdRoute
   '/provider/$id': typeof ProviderIdRoute
+  '/login/': typeof LoginIndexRoute
+  '/buscar/provider/$id': typeof BuscarProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
+  '/provider/service/$id': typeof ProviderServiceIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
+  fullPaths:
+    | '/'
+    | '/client/$id'
+    | '/provider/$id'
+    | '/login'
+    | '/buscar/provider/$id'
+    | '/provider/portfolio-item/$id'
+    | '/provider/service/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
-  id: '__root__' | '/' | '/provider/$id' | '/provider/portfolio-item/$id'
+  to:
+    | '/'
+    | '/client/$id'
+    | '/provider/$id'
+    | '/login'
+    | '/buscar/provider/$id'
+    | '/provider/portfolio-item/$id'
+    | '/provider/service/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/client/$id'
+    | '/provider/$id'
+    | '/login/'
+    | '/buscar/provider/$id'
+    | '/provider/portfolio-item/$id'
+    | '/provider/service/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClientIdRoute: typeof ClientIdRoute
   ProviderIdRoute: typeof ProviderIdRoute
+  LoginIndexRoute: typeof LoginIndexRoute
+  BuscarProviderIdRoute: typeof BuscarProviderIdRoute
   ProviderPortfolioItemIdRoute: typeof ProviderPortfolioItemIdRoute
+  ProviderServiceIdRoute: typeof ProviderServiceIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClientIdRoute: ClientIdRoute,
   ProviderIdRoute: ProviderIdRoute,
+  LoginIndexRoute: LoginIndexRoute,
+  BuscarProviderIdRoute: BuscarProviderIdRoute,
   ProviderPortfolioItemIdRoute: ProviderPortfolioItemIdRoute,
+  ProviderServiceIdRoute: ProviderServiceIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +214,34 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/client/$id",
         "/provider/$id",
-        "/provider/portfolio-item/$id"
+        "/login/",
+        "/buscar/provider/$id",
+        "/provider/portfolio-item/$id",
+        "/provider/service/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
+    "/client/$id": {
+      "filePath": "client/$id.tsx"
+    },
     "/provider/$id": {
       "filePath": "provider/$id.tsx"
     },
+    "/login/": {
+      "filePath": "login/index.tsx"
+    },
+    "/buscar/provider/$id": {
+      "filePath": "buscar/provider/$id.tsx"
+    },
     "/provider/portfolio-item/$id": {
       "filePath": "provider/portfolio-item/$id.tsx"
+    },
+    "/provider/service/$id": {
+      "filePath": "provider/service/$id.tsx"
     }
   }
 }
