@@ -16,6 +16,7 @@ import { Route as LoginIndexImport } from './routes/login/index'
 import { Route as ProviderIdImport } from './routes/provider/$id'
 import { Route as ClientIdImport } from './routes/client/$id'
 import { Route as ProviderServiceIdImport } from './routes/provider/service/$id'
+import { Route as CustomerIdImport } from './routes/customer/$id'
 import { Route as ProviderPortfolioItemIdImport } from './routes/provider/portfolio-item/$id'
 import { Route as BuscarProviderIdImport } from './routes/buscar/provider/$id'
 
@@ -48,6 +49,9 @@ const ClientIdRoute = ClientIdImport.update({
 const ProviderServiceIdRoute = ProviderServiceIdImport.update({
   id: '/provider/service/$id',
   path: '/provider/service/$id',
+const CustomerIdRoute = CustomerIdImport.update({
+  id: '/customer/$id',
+  path: '/customer/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -79,6 +83,11 @@ declare module '@tanstack/react-router' {
       path: '/client/$id'
       fullPath: '/client/$id'
       preLoaderRoute: typeof ClientIdImport
+    '/customer/$id': {
+      id: '/customer/$id'
+      path: '/customer/$id'
+      fullPath: '/customer/$id'
+      preLoaderRoute: typeof CustomerIdImport
       parentRoute: typeof rootRoute
     }
     '/provider/$id': {
@@ -124,6 +133,7 @@ declare module '@tanstack/react-router' {
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/client/$id': typeof ClientIdRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/login': typeof LoginIndexRoute
   '/buscar/provider/$id': typeof BuscarProviderIdRoute
@@ -134,6 +144,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/client/$id': typeof ClientIdRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/login': typeof LoginIndexRoute
   '/buscar/provider/$id': typeof BuscarProviderIdRoute
@@ -145,6 +156,7 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/client/$id': typeof ClientIdRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/login/': typeof LoginIndexRoute
   '/buscar/provider/$id': typeof BuscarProviderIdRoute
@@ -180,12 +192,24 @@ export interface FileRouteTypes {
     | '/buscar/provider/$id'
     | '/provider/portfolio-item/$id'
     | '/provider/service/$id'
+    | '/customer/$id'
+    | '/provider/$id'
+    | '/provider/portfolio-item/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/customer/$id' | '/provider/$id' | '/provider/portfolio-item/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/customer/$id'
+    | '/provider/$id'
+    | '/provider/portfolio-item/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClientIdRoute: typeof ClientIdRoute
+  CustomerIdRoute: typeof CustomerIdRoute
   ProviderIdRoute: typeof ProviderIdRoute
   LoginIndexRoute: typeof LoginIndexRoute
   BuscarProviderIdRoute: typeof BuscarProviderIdRoute
@@ -196,6 +220,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClientIdRoute: ClientIdRoute,
+  CustomerIdRoute: CustomerIdRoute,
   ProviderIdRoute: ProviderIdRoute,
   LoginIndexRoute: LoginIndexRoute,
   BuscarProviderIdRoute: BuscarProviderIdRoute,
@@ -215,6 +240,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/client/$id",
+        "/customer/$id",
         "/provider/$id",
         "/login/",
         "/buscar/provider/$id",
@@ -227,6 +253,8 @@ export const routeTree = rootRoute
     },
     "/client/$id": {
       "filePath": "client/$id.tsx"
+    "/customer/$id": {
+      "filePath": "customer/$id.tsx"
     },
     "/provider/$id": {
       "filePath": "provider/$id.tsx"
