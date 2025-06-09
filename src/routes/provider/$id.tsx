@@ -71,7 +71,7 @@ function RouteComponent() {
 
   if (!providerData) {
     return (
-      <div className="container mx-auto px-4 py-8 max-w-6xl bg-gray-900 min-h-screen text-foreground">
+      <div className="container mx-auto px-4 py-8 max-w-6xl min-h-screen text-foreground">
         Cargando perfil o perfil no encontrado...
       </div>
     );

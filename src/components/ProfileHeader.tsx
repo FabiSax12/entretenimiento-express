@@ -4,6 +4,9 @@ import { Button } from "@heroui/button";
 import { Provider } from "@/core/domain/entities";
 import { CategoryChips } from "./CategoryChips";
 import { ContactInfo } from "./ContactInfo";
+import { usePermissions } from "@/hooks/usePermissions";
+import { useAuthStore } from "@/stores/authStore";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 
 interface ProfileHeaderProps {
   providerData: Provider;
@@ -14,6 +17,10 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
   providerData,
   onEditClick
 }) => {
+  const loggedUser = useRequireAuth();
+
+  const permissions = usePermissions(loggedUser, providerData.id, "profile");
+
   return (
     <div className="flex flex-col md:flex-row items-start md:items-center gap-6 mb-8 p-6 bg-content1 rounded-lg shadow-lg">
       <Avatar
@@ -45,15 +52,17 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
             />
           </div>
 
-          <Button
-            color="primary"
-            size="sm"
-            variant="bordered"
-            startContent={<Edit className="h-4 w-4" />}
-            onPress={onEditClick}
-          >
-            Editar Perfil
-          </Button>
+          {
+            permissions.canEdit && <Button
+              color="primary"
+              size="sm"
+              variant="bordered"
+              startContent={<Edit className="h-4 w-4" />}
+              onPress={onEditClick}
+            >
+              Editar Perfil
+            </Button>
+          }
         </div>
       </div>
     </div>
