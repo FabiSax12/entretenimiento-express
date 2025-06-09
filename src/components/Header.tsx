@@ -5,9 +5,12 @@ import { Avatar } from '@heroui/avatar'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/dropdown'
 import { Activity, ChevronDown, Flashlight, Scale, Server, User } from 'lucide-react'
 import { useState } from 'react'
+import { useAuthStore } from '@/stores/authStore'
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const logOut = useAuthStore((state) => state.logout)
 
   return (
     <Navbar isBordered isBlurred onMenuOpenChange={setIsMenuOpen} maxWidth='xl'>
@@ -82,30 +85,6 @@ export const Header = () => {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-
-
-        <NavbarItem>
-          <Link
-            className='px-2 py-1'
-            activeProps={{
-              className: 'bg-primary text-background rounded-md'
-            }}
-            to='/users'
-          >
-            Home
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link
-            className='px-2 py-1'
-            activeProps={{
-              className: 'bg-primary text-background rounded-md'
-            }}
-            to='/page-1'
-          >
-            Page 1
-          </Link>
-        </NavbarItem>
       </NavbarContent>
 
       {/* <NavbarContent justify='end'>
@@ -136,7 +115,7 @@ export const Header = () => {
             </DropdownItem>
             <DropdownItem key="settings">Ajustes</DropdownItem>
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-            <DropdownItem key="logout" color="danger">
+            <DropdownItem key="logout" color="danger" onPress={logOut}>
               Log Out
             </DropdownItem>
           </DropdownMenu>

@@ -1,0 +1,90 @@
+[
+  {
+    "id": "1",
+    "clientId": "user-2",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 4,
+    "comment": "Buen servicio, pero hay aspectos que se pueden mejorar.",
+    "reviewedAt": "2025-06-01T12:00:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "2",
+    "clientId": "user-3",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 5,
+    "comment": "Excelente atención y muy profesional.",
+    "reviewedAt": "2025-06-05T15:30:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "3",
+    "clientId": "user-4",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 3,
+    "comment": "El servicio fue bueno, pero llegó un poco tarde.",
+    "reviewedAt": "2025-06-10T09:45:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "4",
+    "clientId": "user-5",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 5,
+    "comment": "Muy recomendable, volvería a contratar.",
+    "reviewedAt": "2025-06-12T18:20:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "5",
+    "clientId": "user-6",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 2,
+    "comment": "No cumplió con todas mis expectativas.",
+    "reviewedAt": "2025-06-15T11:10:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "6",
+    "clientId": "user-7",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 4,
+    "comment": "Buen trato y comunicación clara.",
+    "reviewedAt": "2025-06-18T14:00:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "7",
+    "clientId": "user-8",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 5,
+    "comment": "Servicio rápido y eficiente.",
+    "reviewedAt": "2025-06-20T16:45:00Z",
+    "isVisible": true
+  },
+  {
+    "id": "8",
+    "clientId": "user-9",
+    "providerId": "user-1",
+    "serviceId": "",
+    "contractId": "",
+    "rating": 3,
+    "comment": "Podría mejorar la puntualidad.",
+    "reviewedAt": "2025-06-22T10:30:00Z",
+    "isVisible": true
+  }
+]

@@ -6,6 +6,7 @@ import { ProfileDetails } from "../ProfileDetails";
 import { Portfolio } from "../Portfolio";
 import { Services } from "../Service";
 import { Availability } from "../Availability";
+import { ProviderReviews } from "../ProviderReviews";
 
 interface ProfileTabsProps {
   providerData: Provider;
@@ -49,8 +50,11 @@ export const ProfileTabs: React.FC<ProfileTabsProps> = ({
         </Tab>
         <Tab key="availability" title="Disponibilidad">
           <Availability
-            providerData = {providerData}
+            providerData={providerData}
           />
+        </Tab>
+        <Tab key="reviews" title="Reseñas">
+          <ProviderReviews />
         </Tab>
       </Tabs>
     </AnimatePresence>

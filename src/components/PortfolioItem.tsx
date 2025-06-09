@@ -8,9 +8,10 @@ import { getItemTypeIcon, getItemTypeColor } from "../utils/portfolioHelper";
 interface PortfolioItemProps {
   item: PortfolioItemType;
   onEdit: (itemId: string) => void;
+  canEdit?: boolean;
 }
 
-export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onEdit }) => {
+export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onEdit, canEdit = false }) => {
   return (
     <Card className="overflow-hidden bg-content1 shadow-lg">
       <div className="relative h-48 bg-gray-700">
@@ -47,14 +48,16 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onEdit }) =>
           <span className="text-xs text-gray-500">
             Añadido: {new Date(item.createdAt).toLocaleDateString()}
           </span>
-          <Button
-            variant="light"
-            size="sm"
-            className="text-blue-400 hover:text-blue-300"
-            onPress={() => onEdit(item.id)}
-          >
-            Editar
-          </Button>
+          {
+            canEdit && <Button
+              variant="light"
+              size="sm"
+              className="text-blue-400 hover:text-blue-300"
+              onPress={() => onEdit(item.id)}
+            >
+              Editar
+            </Button>
+          }
         </div>
       </div>
     </Card>
