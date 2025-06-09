@@ -33,22 +33,31 @@ export const SearchBar: FC<SearchBarProps> = ({
     };
 
     return (
-        <div className="flex items-center gap-2 w-full">
-            <Input
-                label="Buscar"
-                placeholder={placeholder}
-                value={query}
-                onChange={handleChange}
-                onKeyDown={handleKeyDown}
-                className="flex-grow"
-            />
-            <Button
-                variant = "solid"
-                color = "primary"
-                onPress = {() => onSearch(query)}
-            >
-                Buscar
-            </Button>
+        <div className=''>
+					<div className="flex items-center gap-2 w-full">
+							<Input
+									placeholder={placeholder}
+									value={query}
+									onChange={handleChange}
+									onKeyDown={handleKeyDown}
+									className="flex-grow"
+							/>
+							<Button
+									variant = "solid"
+									color = "primary"
+									onPress = {() => onSearch(query)}
+							>
+									Buscar
+							</Button>
+					</div>
         </div>
     );
 }
+
+/* 
+
+Dropdown
+Select
+Autocomplete
+
+*/
