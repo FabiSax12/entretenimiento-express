@@ -20,6 +20,7 @@
     "@heroui/card": "^2.2.18",
     "@heroui/checkbox": "^2.3.19",
     "@heroui/chip": "^2.2.15",
+    "@heroui/date-picker": "^2.3.21",
     "@heroui/drawer": "^2.2.16",
     "@heroui/dropdown": "^2.3.19",
     "@heroui/input": "^2.4.20",

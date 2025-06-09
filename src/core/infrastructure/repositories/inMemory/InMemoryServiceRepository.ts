@@ -29,8 +29,8 @@ export class InMemoryServiceRepository implements ServiceRepository {
 
   async getAll(): Promise<Service[]> {
     return Array.from(this.services.values());
-  }
-
+  }  
+  
   async getById(serviceId: string): Promise<Service | undefined> {
     return this.services.get(serviceId);
   }
