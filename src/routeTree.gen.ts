@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as IndexImport } from './routes/index'
 import { Route as ProviderIdImport } from './routes/provider/$id'
+import { Route as CustomerIdImport } from './routes/customer/$id'
 import { Route as ProviderPortfolioItemIdImport } from './routes/provider/portfolio-item/$id'
 
 // Create/Update Routes
@@ -26,6 +27,12 @@ const IndexRoute = IndexImport.update({
 const ProviderIdRoute = ProviderIdImport.update({
   id: '/provider/$id',
   path: '/provider/$id',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const CustomerIdRoute = CustomerIdImport.update({
+  id: '/customer/$id',
+  path: '/customer/$id',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -44,6 +51,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/customer/$id': {
+      id: '/customer/$id'
+      path: '/customer/$id'
+      fullPath: '/customer/$id'
+      preLoaderRoute: typeof CustomerIdImport
       parentRoute: typeof rootRoute
     }
     '/provider/$id': {
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
@@ -80,27 +96,39 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/customer/$id': typeof CustomerIdRoute
   '/provider/$id': typeof ProviderIdRoute
   '/provider/portfolio-item/$id': typeof ProviderPortfolioItemIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
+  fullPaths:
+    | '/'
+    | '/customer/$id'
+    | '/provider/$id'
+    | '/provider/portfolio-item/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/provider/$id' | '/provider/portfolio-item/$id'
-  id: '__root__' | '/' | '/provider/$id' | '/provider/portfolio-item/$id'
+  to: '/' | '/customer/$id' | '/provider/$id' | '/provider/portfolio-item/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/customer/$id'
+    | '/provider/$id'
+    | '/provider/portfolio-item/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CustomerIdRoute: typeof CustomerIdRoute
   ProviderIdRoute: typeof ProviderIdRoute
   ProviderPortfolioItemIdRoute: typeof ProviderPortfolioItemIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CustomerIdRoute: CustomerIdRoute,
   ProviderIdRoute: ProviderIdRoute,
   ProviderPortfolioItemIdRoute: ProviderPortfolioItemIdRoute,
 }
@@ -116,12 +144,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/customer/$id",
         "/provider/$id",
         "/provider/portfolio-item/$id"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/customer/$id": {
+      "filePath": "customer/$id.tsx"
     },
     "/provider/$id": {
       "filePath": "provider/$id.tsx"
