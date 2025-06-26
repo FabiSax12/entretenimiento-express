@@ -7,7 +7,7 @@ export const Route = createFileRoute('/')({
 })
 
 function App() {
-
+  return null;
   return <>
     <div className="flex h-full w-full items-center justify-center">
       <div className="grid h-full w-full gap-4  p-2 grid-cols-6 grid-rows-2 ">

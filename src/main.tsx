@@ -7,12 +7,14 @@ import * as TanStackQueryProvider from './integrations/tanstack-query/root-provi
 import { PageSpinner } from './components/PageSpinner.tsx'
 import { routeTree } from './routeTree.gen'
 import './styles.css'
+import { useAuthStore } from './stores/authStore.ts'
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
   context: {
     ...TanStackQueryProvider.getContext(),
+    auth: undefined
   },
   defaultPreload: 'intent',
   scrollRestoration: true,
@@ -28,18 +30,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+const Providers = () => {
+  const auth = useAuthStore()
+
+  return (
+    <HeroUIProvider>
+      <ToastProvider />
+      <TanStackQueryProvider.Provider>
+        <RouterProvider router={router} context={{ auth }} />
+      </TanStackQueryProvider.Provider>
+    </HeroUIProvider>
+  )
+}
+
 // Render the app
 const rootElement = document.getElementById('app')
 if (rootElement && !rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement)
   root.render(
     <StrictMode>
-      <HeroUIProvider>
-        <ToastProvider />
-        <TanStackQueryProvider.Provider>
-          <RouterProvider router={router} />
-        </TanStackQueryProvider.Provider>
-      </HeroUIProvider>
+      <Providers />
     </StrictMode>,
   )
 }

@@ -4,6 +4,8 @@ import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
 import type { PortfolioItem as PortfolioItemType } from "@/core/domain/entities";
 import { getItemTypeIcon, getItemTypeColor } from "../utils/portfolioHelper";
+import { useNavigate, useParams } from "@tanstack/react-router";
+import { useAuthStore } from "@/stores/authStore";
 
 interface PortfolioItemProps {
   item: PortfolioItemType;
@@ -12,15 +14,36 @@ interface PortfolioItemProps {
 }
 
 export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onEdit, canEdit = false }) => {
+  const navigate = useNavigate();
+  const params = useParams({ from: '/provider/$id/' });
+
   return (
     <Card className="overflow-hidden bg-content1 shadow-lg">
       <div className="relative h-48 bg-gray-700">
         {item.fileUrl ? (
-          <img
-            src={item.fileUrl}
-            alt={item.title}
-            className="w-full h-full object-cover"
-          />
+          item.type === 'Photo' ? (
+            <img
+              src={item.fileUrl}
+              alt={item.title}
+              className="w-full h-full object-cover"
+            />
+          ) : item.type === 'Video' ? (
+            <video
+              src={item.fileUrl}
+              className="w-full h-full object-cover"
+              controls
+            />
+          ) : item.type === 'Description' ? (
+            <iframe
+              src={item.fileUrl}
+              title={item.title}
+              className="w-full h-full object-cover overflow-hidden pointer-events-none scrollbar-hide"
+              scrolling="no"
+              style={{ minHeight: "100%", pointerEvents: "none" }}
+            />
+          ) : (
+            <iframe />
+          )
         ) : (
           <div className="flex items-center justify-center w-full h-full text-gray-400">
             {React.createElement(
@@ -48,18 +71,28 @@ export const PortfolioItem: React.FC<PortfolioItemProps> = ({ item, onEdit, canE
           <span className="text-xs text-gray-500">
             Añadido: {new Date(item.createdAt).toLocaleDateString()}
           </span>
-          {
-            canEdit && <Button
-              variant="light"
+          <div>
+            <Button
+
+              color="primary"
               size="sm"
-              className="text-blue-400 hover:text-blue-300"
-              onPress={() => onEdit(item.id)}
+              onPress={() => navigate({ to: `/provider/$id/portfolio-item/$itemId`, params: { id: params.id, itemId: item.id } })}
             >
-              Editar
+              Ver
             </Button>
-          }
+            {
+              canEdit && <Button
+                variant="light"
+                size="sm"
+                className="text-blue-400 hover:text-blue-300"
+                onPress={() => onEdit(item.id)}
+              >
+                Editar
+              </Button>
+            }
+          </div>
         </div>
       </div>
-    </Card>
+    </Card >
   );
 };

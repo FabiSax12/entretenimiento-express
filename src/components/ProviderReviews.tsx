@@ -14,7 +14,7 @@ import { Button } from "@heroui/button";
 import { BookOpen, Minus, Plus, Sheet, Star } from "lucide-react";
 
 export const ProviderReviews = () => {
-  const providerData = useLoaderData({ from: '/provider/$id' });
+  const providerData = useLoaderData({ from: '/provider/$id/' });
   const [showAllReviews, setShowAllReviews] = useState(false);
   const [filters, setFilters] = useState<FilterOptions>({
     sortBy: 'newest'

@@ -1,4 +1,4 @@
-import { createFileRoute, useLoaderData } from '@tanstack/react-router';
+import { createFileRoute, Outlet, useLoaderData } from '@tanstack/react-router';
 import { Provider } from '@/core/domain/entities';
 import { MissingURLParamException } from '@/core/domain/exceptions/MissingURLParamException';
 import { useEditProfile } from "@/hooks/useEditProfile";
@@ -10,7 +10,7 @@ import { providerRepository, serviceRepository } from '@/core/infrastructure/rep
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 
-export const Route = createFileRoute('/provider/$id')({
+export const Route = createFileRoute('/provider/$id/')({
   component: RouteComponent,
   loader: async ({ context, params }): Promise<Provider> => {
     const { id } = params
@@ -26,7 +26,7 @@ export const Route = createFileRoute('/provider/$id')({
 });
 
 function RouteComponent() {
-  const providerData = useLoaderData({ from: Route.fullPath });
+  const providerData = Route.useLoaderData();
   const qc = useQueryClient();
 
   const [isAddServiceDrawerOpen, setIsAddServiceDrawerOpen] = useState(false)
@@ -107,6 +107,7 @@ function RouteComponent() {
         onClose={() => setIsAddServiceDrawerOpen(false)}
         providerData={providerData}
       />
+      <Outlet />
     </div>
   );
 }

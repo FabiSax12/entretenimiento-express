@@ -1,8 +1,6 @@
-import { ReviewsSection } from '@/components/ReviewSection'
-import type { Portfolio, Review } from '@/core/domain/entities'
+import type { Portfolio } from '@/core/domain/entities'
 import { categoryRepository, portfolioRepository, serviceRepository } from '@/core/infrastructure/repositories/inMemory'
 import { formatPrice } from '@/utils/formatPrice'
-import { Button } from '@heroui/button'
 import { Card } from '@heroui/card'
 import { Chip } from '@heroui/chip'
 import { useQuery } from '@tanstack/react-query'
@@ -10,15 +8,15 @@ import { createFileRoute, Link } from '@tanstack/react-router'
 import { SquareArrowOutUpRight } from 'lucide-react'
 import { useMemo } from 'react'
 
-export const Route = createFileRoute('/provider/service/$id')({
+export const Route = createFileRoute('/provider/$id/service/$serviceId')({
   component: RouteComponent,
 
   loader: async ({ context, params }) => {
-    const { id } = params
+    const { serviceId } = params
 
     return context.queryClient.ensureQueryData({
-      queryKey: ['service', id],
-      queryFn: async () => serviceRepository.getById(id),
+      queryKey: ['service', serviceId],
+      queryFn: async () => serviceRepository.getById(serviceId),
       staleTime: 1000 * 60 * 5,
       retry: 1,
     })
@@ -27,8 +25,8 @@ export const Route = createFileRoute('/provider/service/$id')({
 
 function RouteComponent() {
 
-  const navigate = Route.useNavigate()
   const service = Route.useLoaderData()
+  const params = Route.useParams()
 
   const {
     data: portfolio,
@@ -107,8 +105,8 @@ function RouteComponent() {
               <div className="flex flex-wrap gap-1">
                 {servicePortfolioItems.map((item) => (
                   <Link
-                    to='/provider/portfolio-item/$id'
-                    params={{ id: item.id }}
+                    to='/provider/$id/portfolio-item/$itemId'
+                    params={{ id: params.id, itemId: item.id }}
                     key={item.id}
                   >
                     <Chip

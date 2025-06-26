@@ -1,20 +1,24 @@
-import { Outlet, createRootRouteWithContext } from '@tanstack/react-router'
+import { Outlet, createRootRouteWithContext, redirect } from '@tanstack/react-router'
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 
 import TanStackQueryLayout from '../integrations/tanstack-query/layout.tsx'
 
 import type { QueryClient } from '@tanstack/react-query'
 import { Header } from '@/components/Header.tsx'
+import type { AuthState } from '@/stores/authStore.ts'
 
 interface MyRouterContext {
   queryClient: QueryClient
+  auth?: AuthState
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
   notFoundComponent: RootNotFoundComponent,
-  loader: async ({ context }) => {
-    context.queryClient.setQueryData(['test'], 'test')
+  beforeLoad: async ({ context, location }) => {
+    if (!context.auth?.isAuthenticated && !location.pathname.includes('/login')) {
+      throw redirect({ to: '/login' })
+    }
   }
 })
 

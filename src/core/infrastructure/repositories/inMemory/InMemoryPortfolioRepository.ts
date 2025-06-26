@@ -38,6 +38,7 @@ export class InMemoryPortfolioRepository implements PortfolioRepository {
   }
 
   async getByProviderId(providerId: string): Promise<Portfolio> {
+    console.log(this.portfolios)
     const portfolios = Array.from(this.portfolios.values())
       .filter(portfolio => portfolio.providerId === providerId);
 

@@ -1,5 +1,4 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { MissingURLParamException } from '@/core/domain/exceptions/MissingURLParamException'
 import { serviceRepository as repo } from '@/core/infrastructure/repositories/inMemory/index'
 import { useEffect, useState } from 'react'
 import { SearchBar } from '@/components/SearchBar'
@@ -9,18 +8,8 @@ import { Service } from '@/core/domain/entities'
 
 // const repo = new InMemoryServiceRepository()
 
-export const Route = createFileRoute('/customer/$id')({
-  component: RouteComponent,
-  loader: async ({ context, params }): Promise<Service> => {
-    const { id } = params
-    if (!id) throw new MissingURLParamException(['id']);
-    return context.queryClient.ensureQueryData({
-      queryKey: ['service', id],
-      queryFn: () => repo.getById(id),
-      staleTime: 1000 * 60 * 5,
-      retry: 1,
-    })
-  }
+export const Route = createFileRoute('/services')({
+  component: RouteComponent
 });
 
 function RouteComponent() {
@@ -35,12 +24,12 @@ function RouteComponent() {
     setLoading(true)
     repo.getAll().then(arr => {
       setAllServices(arr)
-      setResults(arr) 
+      setResults(arr)
       setLoading(false)
     })
-  },[])
+  }, [])
 
-// función que aplica búsqueda + filtro de categorías
+  // función que aplica búsqueda + filtro de categorías
   function applyFilters(q: string, cats: string[]) {
     const tokens = q
       .trim()
@@ -50,15 +39,15 @@ function RouteComponent() {
 
     let filtered = tokens.length
       ? allServices.filter(s => {
-          const haystack = (
-            s.name +
-            ' ' +
-            s.description +
-            ' ' +
-            s.categories.join(' ')
-          ).toLowerCase()
-          return tokens.every(tok => haystack.includes(tok))
-        })
+        const haystack = (
+          s.name +
+          ' ' +
+          s.description +
+          ' ' +
+          s.categories.join(' ')
+        ).toLowerCase()
+        return tokens.every(tok => haystack.includes(tok))
+      })
       : allServices
 
     if (cats.length > 0) {
@@ -70,12 +59,12 @@ function RouteComponent() {
     setResults(filtered)
   }
 
-function handleSearch(keyword: string) {
+  function handleSearch(keyword: string) {
     setkeyword(keyword)
     applyFilters(keyword, categories)
   }
 
-function handleCategoriesChange(ids: string[]) {
+  function handleCategoriesChange(ids: string[]) {
     setCategories(ids)
     applyFilters(keyword, ids)
   }
@@ -100,7 +89,7 @@ function handleCategoriesChange(ids: string[]) {
 
       {loading && <p>Cargando…</p>}
 
-      {!loading && <ClientServicesList services = { results }/>}
+      {!loading && <ClientServicesList services={results} />}
 
     </div>
   );

@@ -7,12 +7,12 @@
       {
         "id": "item-1",
         "portfolioId": "portfolio-1",
-        "type": "Video",
+        "type": "Photo",
         "title": "Festival Verano 2023",
         "description": "Actuación principal en el Festival de Verano en Playa Jacó",
         "createdAt": "2025-03-15T00:00:00.000Z",
         "active": true,
-        "fileUrl": "https://placehold.co/300x200"
+        "fileUrl": "/provider/portfolio/Festival_Verano_2023.png"
       },
       {
         "id": "item-2",
@@ -22,17 +22,17 @@
         "description": "Música ambiental y DJ set para la gala de cierre",
         "createdAt": "2025-05-22T00:00:00.000Z",
         "active": true,
-        "fileUrl": "https://placehold.co/300x200"
+        "fileUrl": "/provider/portfolio/Evento_Corporativo.png"
       },
       {
         "id": "item-3",
         "portfolioId": "portfolio-1",
-        "type": "Audio",
+        "type": "Video",
         "title": "Mix Tropical 2025",
         "description": "Compilación de éxitos tropicales remixados",
         "createdAt": "2025-06-10T00:00:00.000Z",
         "active": true,
-        "fileUrl": "https://placehold.co/300x200"
+        "fileUrl": "/provider/portfolio/MIX_TROPICAL.mp4"
       },
       {
         "id": "item-4",
@@ -42,7 +42,7 @@
         "description": "Descripción detallada de servicios para eventos empresariales",
         "createdAt": "2025-01-05T00:00:00.000Z",
         "active": true,
-        "fileUrl": "https://placehold.co/300x200"
+        "fileUrl": "/public/provider/portfolio/Descripción.pdf"
       }
     ]
   }

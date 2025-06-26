@@ -4,7 +4,7 @@ import { userRepository } from "@/core/infrastructure/repositories/inMemory";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-interface AuthState {
+export interface AuthState {
   isAuthenticated: boolean;
   user: User | null;
   login: (email: string, password: string) => Promise<User>;

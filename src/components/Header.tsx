@@ -1,16 +1,23 @@
-import { Link } from '@tanstack/react-router'
-import { Button } from '@heroui/button'
-import { Navbar, NavbarBrand, NavbarContent, NavbarItem, NavbarMenu, NavbarMenuItem, NavbarMenuToggle } from '@heroui/navbar'
+import { Link, useNavigate } from '@tanstack/react-router'
+import { Navbar, NavbarBrand, NavbarContent, NavbarMenu, NavbarMenuItem, NavbarMenuToggle } from '@heroui/navbar'
 import { Avatar } from '@heroui/avatar'
 import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger } from '@heroui/dropdown'
-import { Activity, ChevronDown, Flashlight, Scale, Server, User } from 'lucide-react'
 import { useState } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 
 export const Header = () => {
+  const navigate = useNavigate()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const logOut = useAuthStore((state) => state.logout)
+  const user = useAuthStore((state) => state.user)
+  const userType: 'provider' | 'client' = user?.role?.toLowerCase() as 'provider' | 'client'
+
+  const handleLogout = () => {
+    logOut()
+    navigate({ to: '/login' })
+  }
+
 
   return (
     <Navbar isBordered isBlurred onMenuOpenChange={setIsMenuOpen} maxWidth='xl'>
@@ -29,7 +36,7 @@ export const Header = () => {
       <NavbarContent justify='center' className='hidden sm:flex'>
 
 
-        <Dropdown>
+        {/* <Dropdown>
           <NavbarItem>
             <DropdownTrigger>
               <Button
@@ -84,7 +91,7 @@ export const Header = () => {
               +Supreme Support
             </DropdownItem>
           </DropdownMenu>
-        </Dropdown>
+        </Dropdown> */}
       </NavbarContent>
 
       {/* <NavbarContent justify='end'>
@@ -92,46 +99,52 @@ export const Header = () => {
         <Button color='danger' isIconOnly startContent={<LogOut className='text-foreground' size={18} />} size='sm' />
       </NavbarContent> */}
 
-      <NavbarContent justify='end'>
-        <Dropdown placement="bottom-end">
-          <DropdownTrigger>
-            <Avatar
-              isBordered
-              as="button"
-              className="transition-transform"
-              color="secondary"
-              name="Marvin Campos"
-              size="sm"
-              src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
-            />
-          </DropdownTrigger>
-          <DropdownMenu aria-label="Profile Actions" variant="flat">
-            <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold">Sesión iniciada como</p>
-              <p className="font-semibold">marvincampos@itc.ac.cr</p>
-            </DropdownItem>
-            <DropdownItem key="settings">
-              <Link to='/provider/$id' params={{ id: 'user-1' }}>Perfil</Link>
-            </DropdownItem>
-            <DropdownItem key="settings">Ajustes</DropdownItem>
-            <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
-            <DropdownItem key="logout" color="danger" onPress={logOut}>
-              Log Out
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-      </NavbarContent>
+      {
+        user && (
+          <NavbarContent justify='end'>
+            <Dropdown placement="bottom-end">
+              <DropdownTrigger>
+                <Avatar
+                  isBordered
+                  as="button"
+                  className="transition-transform"
+                  color="secondary"
+                  name="Marvin Campos"
+                  size="sm"
+                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                />
+              </DropdownTrigger>
+              <DropdownMenu aria-label="Profile Actions" variant="flat">
+                <DropdownItem key="session" className="h-14 gap-2">
+                  <p className="font-semibold">Sesión iniciada como</p>
+                  <p className="font-semibold">marvincampos@itc.ac.cr</p>
+                </DropdownItem>
+                <DropdownItem key="profile" onPress={() => navigate({ to: `/${userType}/$id`, params: { id: user!.id } })}>
+                  Perfil
+                </DropdownItem>
+                <DropdownItem key="settings">Ajustes</DropdownItem>
+                <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+                <DropdownItem key="logout" color="danger" onPress={handleLogout}>
+                  Log Out
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </NavbarContent>
+        )
+      }
 
-
-
-      <NavbarMenu>
-        <NavbarMenuItem>
-          <Link to='/'>Home</Link>
-        </NavbarMenuItem>
-        <NavbarMenuItem>
-          <Link to='/provider/$id' params={{ id: 'user-1' }}>Perfil</Link>
-        </NavbarMenuItem>
-      </NavbarMenu>
+      {
+        user && (
+          <NavbarMenu>
+            <NavbarMenuItem>
+              <Link to='/'>Home</Link>
+            </NavbarMenuItem>
+            <NavbarMenuItem>
+              <Link to={`/${userType}/$id`} params={{ id: user!.id }}>Perfil</Link>
+            </NavbarMenuItem>
+          </NavbarMenu>
+        )
+      }
     </Navbar>
   )
 }

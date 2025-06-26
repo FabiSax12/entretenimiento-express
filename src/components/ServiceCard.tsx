@@ -3,11 +3,12 @@ import { SquareArrowOutUpRight } from "lucide-react";
 import { Button } from "@heroui/button";
 import { Card } from "@heroui/card";
 import { Chip } from "@heroui/chip";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { getRouteApi, Link, useNavigate, useParams } from "@tanstack/react-router";
 import { Portfolio, Service } from "@/core/domain/entities";
 import { formatPrice } from "@/utils/formatPrice";
 import { categoryRepository, portfolioRepository } from "@/core/infrastructure/repositories/inMemory";
 import { useQuery } from "@tanstack/react-query";
+import { Route } from "@/routes/provider/$id/service/$serviceId";
 
 interface ServiceCardProps {
   service: Service;
@@ -25,6 +26,7 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
 }) => {
 
   const navigate = useNavigate();
+  const params = useParams({ from: '/provider/$id/' });
 
   const categoriesPromise = useMemo(() => categoryRepository.getAll(), [])
   const categories = use(categoriesPromise);
@@ -94,8 +96,8 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
               <div className="flex flex-wrap gap-1">
                 {servicePortfolioItems.map((item) => (
                   <Link
-                    to='/provider/portfolio-item/$id'
-                    params={{ id: item.id }}
+                    to='/provider/$id/portfolio-item/$itemId'
+                    params={{ id: params.id, itemId: item.id }}
                     key={item.id}
                   >
                     <Chip
@@ -137,7 +139,15 @@ export const ServiceCard: React.FC<ServiceCardProps> = ({
                   Eliminar
                 </Button>
               }
-              <Button onPress={() => navigate({ to: '/provider/service/$id', params: { id: service.id } })} variant="shadow" color="primary" size="sm">
+              <Button
+                onPress={() => navigate({
+                  to: '/provider/$id/service/$serviceId',
+                  params: { id: params.id, serviceId: service.id }
+                })}
+                variant="shadow"
+                color="primary"
+                size="sm"
+              >
                 Ver Detalles
               </Button>
             </div>
